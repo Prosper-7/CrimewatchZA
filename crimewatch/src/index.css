@@ -1,0 +1,71 @@
+:root {
+  /* --- Color tokens: night-console palette, not the default cream/terracotta --- */
+  --ink-950: #0a0e17;
+  --ink-900: #0e1420;
+  --panel-800: #141c2c;
+  --panel-700: #1b2437;
+  --line-600: #2a3550;
+
+  --text-primary: #e8ebf2;
+  --text-muted: #8993a8;
+  --text-dim: #5b6478;
+
+  --signal-amber: #f2a93b;   /* new / unverified incident */
+  --signal-amber-dim: #7a5a25;
+  --safety-teal: #2fb8a6;    /* verified / resolved */
+  --alert-red: #e4523e;      /* high severity */
+  --alert-red-dim: #4a241f;
+
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--ink-950);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--signal-amber-dim);
+}
+
+/* Focus visibility kept intentionally, never removed */
+:focus-visible {
+  outline: 2px solid var(--signal-amber);
+  outline-offset: 2px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
