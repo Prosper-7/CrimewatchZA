@@ -57,6 +57,7 @@ create table if not exists incidents (
   address text,
   reporter_id uuid references auth.users(id) on delete set null,
   verified_by uuid references auth.users(id) on delete set null,
+  media_urls text[] not null default '{}',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -100,7 +101,35 @@ create trigger incidents_set_updated_at
   before update on incidents
   for each row execute procedure set_updated_at();
 
+-- If you already ran this schema before media_urls existed, run this one line
+-- instead of recreating the table:
+--   alter table incidents add column if not exists media_urls text[] not null default '{}';
+
 -- ---------------------------------------------------------------------------
 -- Realtime: broadcast every insert/update/delete on incidents to subscribers
 -- ---------------------------------------------------------------------------
 alter publication supabase_realtime add table incidents;
+
+-- ---------------------------------------------------------------------------
+-- Storage: evidence photos/videos attached to a report
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'incident-media',
+  'incident-media',
+  true,
+  15728640, -- 15 MB
+  array['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime']
+)
+on conflict (id) do nothing;
+
+-- Uploaded evidence is publicly viewable (reports themselves are public)
+create policy "Incident media is publicly readable"
+  on storage.objects for select
+  using (bucket_id = 'incident-media');
+
+-- Anyone submitting a report can upload evidence for it (anonymous reporting
+-- is allowed for incidents, so this mirrors that rather than requiring auth)
+create policy "Anyone can upload incident media"
+  on storage.objects for insert
+  with check (bucket_id = 'incident-media');

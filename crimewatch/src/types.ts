@@ -24,6 +24,7 @@ export interface Incident {
   address: string | null;
   reporter_id: string | null;
   created_at: string;
+  media_urls: string[] | null;
 }
 
 export interface NewIncidentInput {
@@ -34,4 +35,9 @@ export interface NewIncidentInput {
   latitude: number;
   longitude: number;
   address?: string;
+  media_urls?: string[];
 }
+
+export const MAX_MEDIA_FILES = 4;
+export const MAX_MEDIA_FILE_SIZE_MB = 15;
+export const ACCEPTED_MEDIA_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime'];

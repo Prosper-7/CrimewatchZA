@@ -111,6 +111,13 @@ export default function IncidentFeed({ incidents, freshIds }: IncidentFeedProps)
                 style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}
               >
                 {incident.category.replace('_', ' ')} · {incident.address ?? 'location logged'}
+                {incident.media_urls && incident.media_urls.length > 0 && (
+                  <span style={{ color: 'var(--signal-amber)' }}>
+                    {' '}
+                    · {incident.media_urls.length} attachment
+                    {incident.media_urls.length > 1 ? 's' : ''}
+                  </span>
+                )}
               </div>
             </div>
           );
