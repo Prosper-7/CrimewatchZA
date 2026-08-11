@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CrimeWatch.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+203b770ed7fcddadc834c2088cfdd92b996794b5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+42a3eb4e7f994d5052b142ea2d7288968141b627")]
 [assembly: System.Reflection.AssemblyProductAttribute("CrimeWatch.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CrimeWatch.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
