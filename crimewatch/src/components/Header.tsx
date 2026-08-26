@@ -38,10 +38,7 @@ export default function Header({ liveCount, onReportClick }: HeaderProps) {
         >
           CrimeWatch <span style={{ color: 'var(--signal-amber)' }}>ZA</span>
         </h1>
-        <span
-          className="mono"
-          style={{ color: 'var(--text-dim)', fontSize: 12, marginLeft: 6 }}
-        >
+        <span className="mono" style={{ color: 'var(--text-dim)', fontSize: 12, marginLeft: 6 }}>
           COMMUNITY INCIDENT CONSOLE
         </span>
       </div>

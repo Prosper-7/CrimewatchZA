@@ -1,7 +1,6 @@
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import type { Incident } from '../types';
 
-// Default map center: Johannesburg CBD. Swap for the user's actual city/region.
 const DEFAULT_CENTER: [number, number] = [-26.2041, 28.0473];
 
 const severityColor: Record<Incident['severity'], string> = {
@@ -41,15 +40,26 @@ export default function IncidentMap({ incidents, freshIds }: IncidentMapProps) {
           >
             <Popup>
               <div className="mono" style={{ fontSize: 12, minWidth: 180 }}>
-                <strong style={{ fontFamily: 'var(--font-body)' }}>
-                  {incident.title}
-                </strong>
+                <strong style={{ fontFamily: 'var(--font-body)' }}>{incident.title}</strong>
                 <br />
                 {incident.category.replace('_', ' ')} · {incident.severity} severity
                 <br />
                 {incident.address ?? `${incident.latitude.toFixed(4)}, ${incident.longitude.toFixed(4)}`}
                 <br />
                 {new Date(incident.created_at).toLocaleString('en-ZA')}
+                {incident.media_urls && incident.media_urls.length > 0 && (
+                  <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
+                    {incident.media_urls.map((url) =>
+                      /\.(mp4|mov)$/i.test(url) ? (
+                        <video key={url} src={url} controls style={{ width: 72, height: 72, objectFit: 'cover', borderRadius: 4 }} />
+                      ) : (
+                        <a key={url} href={url} target="_blank" rel="noreferrer">
+                          <img src={url} alt="Evidence" style={{ width: 72, height: 72, objectFit: 'cover', borderRadius: 4 }} />
+                        </a>
+                      )
+                    )}
+                  </div>
+                )}
               </div>
             </Popup>
           </CircleMarker>

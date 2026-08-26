@@ -1,5 +1,4 @@
 :root {
-  /* --- Color tokens: night-console palette, not the default cream/terracotta --- */
   --ink-950: #0a0e17;
   --ink-900: #0e1420;
   --panel-800: #141c2c;
@@ -10,10 +9,10 @@
   --text-muted: #8993a8;
   --text-dim: #5b6478;
 
-  --signal-amber: #f2a93b;   /* new / unverified incident */
+  --signal-amber: #f2a93b;
   --signal-amber-dim: #7a5a25;
-  --safety-teal: #2fb8a6;    /* verified / resolved */
-  --alert-red: #e4523e;      /* high severity */
+  --safety-teal: #2fb8a6;
+  --alert-red: #e4523e;
   --alert-red-dim: #4a241f;
 
   --font-display: 'Barlow Condensed', sans-serif;
@@ -24,48 +23,19 @@
   --radius-md: 8px;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html, body, #root {
-  height: 100%;
-  margin: 0;
-}
-
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
 body {
   background: var(--ink-950);
   color: var(--text-primary);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
-
-button {
-  font-family: inherit;
-  cursor: pointer;
-}
-
-a {
-  color: inherit;
-}
-
-::selection {
-  background: var(--signal-amber-dim);
-}
-
-/* Focus visibility kept intentionally, never removed */
-:focus-visible {
-  outline: 2px solid var(--signal-amber);
-  outline-offset: 2px;
-}
-
-.mono {
-  font-family: var(--font-mono);
-}
-
+button { font-family: inherit; cursor: pointer; }
+a { color: inherit; }
+::selection { background: var(--signal-amber-dim); }
+:focus-visible { outline: 2px solid var(--signal-amber); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); }
 @media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.001ms !important;
-    transition-duration: 0.001ms !important;
-  }
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }

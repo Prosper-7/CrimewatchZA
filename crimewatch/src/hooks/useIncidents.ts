@@ -6,7 +6,6 @@ export function useIncidents() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Tracks incident ids that just arrived, so the UI can flash/pulse them
   const [freshIds, setFreshIds] = useState<Set<string>>(new Set());
   const freshTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
@@ -47,36 +46,21 @@ export function useIncidents() {
 
     loadInitial();
 
-    // Real-time: any insert/update/delete on the incidents table pushes here instantly
     const channel = supabase
       .channel('incidents-realtime')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'incidents' },
-        (payload) => {
-          const incident = payload.new as Incident;
-          setIncidents((prev) => [incident, ...prev]);
-          markFresh(incident.id);
-        }
-      )
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'incidents' },
-        (payload) => {
-          const incident = payload.new as Incident;
-          setIncidents((prev) =>
-            prev.map((i) => (i.id === incident.id ? incident : i))
-          );
-        }
-      )
-      .on(
-        'postgres_changes',
-        { event: 'DELETE', schema: 'public', table: 'incidents' },
-        (payload) => {
-          const oldIncident = payload.old as Incident;
-          setIncidents((prev) => prev.filter((i) => i.id !== oldIncident.id));
-        }
-      )
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'incidents' }, (payload) => {
+        const incident = payload.new as Incident;
+        setIncidents((prev) => [incident, ...prev]);
+        markFresh(incident.id);
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'incidents' }, (payload) => {
+        const incident = payload.new as Incident;
+        setIncidents((prev) => prev.map((i) => (i.id === incident.id ? incident : i)));
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'incidents' }, (payload) => {
+        const oldIncident = payload.old as Incident;
+        setIncidents((prev) => prev.filter((i) => i.id !== oldIncident.id));
+      })
       .subscribe();
 
     return () => {

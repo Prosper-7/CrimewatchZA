@@ -4,7 +4,7 @@
 create extension if not exists "uuid-ossp";
 
 -- ---------------------------------------------------------------------------
--- Profiles: one row per authenticated user, extends Supabase auth.users
+-- Profiles
 -- ---------------------------------------------------------------------------
 create table if not exists profiles (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -22,7 +22,6 @@ create policy "Profiles are viewable by everyone"
 create policy "Users can update their own profile"
   on profiles for update using (auth.uid() = id);
 
--- Auto-create a profile row whenever a new user signs up
 create or replace function handle_new_user()
 returns trigger as $$
 begin
@@ -38,7 +37,7 @@ create trigger on_auth_user_created
   for each row execute procedure handle_new_user();
 
 -- ---------------------------------------------------------------------------
--- Incidents: the core reporting table. Realtime is enabled on this below.
+-- Incidents
 -- ---------------------------------------------------------------------------
 create table if not exists incidents (
   id uuid primary key default uuid_generate_v4(),
@@ -57,6 +56,7 @@ create table if not exists incidents (
   address text,
   reporter_id uuid references auth.users(id) on delete set null,
   verified_by uuid references auth.users(id) on delete set null,
+  media_urls text[] not null default '{}',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -66,16 +66,13 @@ create index if not exists incidents_location_idx on incidents (latitude, longit
 
 alter table incidents enable row level security;
 
--- Anyone (including anonymous visitors) can read incident reports
 create policy "Incidents are publicly readable"
   on incidents for select using (true);
 
--- Only authenticated users can submit a report, and only as themselves
 create policy "Authenticated users can report incidents"
   on incidents for insert
   with check (auth.uid() = reporter_id or reporter_id is null);
 
--- Only moderators/admins can update status (verify, resolve, dismiss)
 create policy "Moderators can update incident status"
   on incidents for update
   using (
@@ -86,7 +83,6 @@ create policy "Moderators can update incident status"
     )
   );
 
--- Keep updated_at current
 create or replace function set_updated_at()
 returns trigger as $$
 begin
@@ -100,7 +96,85 @@ create trigger incidents_set_updated_at
   before update on incidents
   for each row execute procedure set_updated_at();
 
--- ---------------------------------------------------------------------------
--- Realtime: broadcast every insert/update/delete on incidents to subscribers
--- ---------------------------------------------------------------------------
+-- If you already ran this schema before media_urls existed:
+--   alter table incidents add column if not exists media_urls text[] not null default '{}';
+
 alter publication supabase_realtime add table incidents;
+
+-- ---------------------------------------------------------------------------
+-- Storage: evidence photos/videos attached to a report
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'incident-media', 'incident-media', true, 15728640,
+  array['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime']
+)
+on conflict (id) do nothing;
+
+create policy "Incident media is publicly readable"
+  on storage.objects for select
+  using (bucket_id = 'incident-media');
+
+create policy "Anyone can upload incident media"
+  on storage.objects for insert
+  with check (bucket_id = 'incident-media');
+
+-- ---------------------------------------------------------------------------
+-- Articles: true-crime content section (Brooklyn's part)
+-- ---------------------------------------------------------------------------
+create table if not exists articles (
+  id uuid primary key default uuid_generate_v4(),
+  title text not null,
+  slug text not null unique,
+  body text not null,
+  cover_image_url text,
+  published boolean not null default false,
+  author_id uuid references auth.users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists articles_published_idx on articles (published, created_at desc);
+
+alter table articles enable row level security;
+
+-- Published articles are public; unpublished drafts are only visible to
+-- their author and to moderators/admins (so drafts can be reviewed)
+create policy "Published articles are publicly readable"
+  on articles for select
+  using (
+    published = true
+    or auth.uid() = author_id
+    or exists (
+      select 1 from profiles
+      where profiles.id = auth.uid()
+      and profiles.role in ('moderator', 'admin')
+    )
+  );
+
+-- Only moderators/admins can write articles (matches RequireModerator gate
+-- on the /articles/new route in the app)
+create policy "Moderators can create articles"
+  on articles for insert
+  with check (
+    exists (
+      select 1 from profiles
+      where profiles.id = auth.uid()
+      and profiles.role in ('moderator', 'admin')
+    )
+  );
+
+create policy "Moderators can update articles"
+  on articles for update
+  using (
+    exists (
+      select 1 from profiles
+      where profiles.id = auth.uid()
+      and profiles.role in ('moderator', 'admin')
+    )
+  );
+
+drop trigger if exists articles_set_updated_at on articles;
+create trigger articles_set_updated_at
+  before update on articles
+  for each row execute procedure set_updated_at();
