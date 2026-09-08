@@ -11,6 +11,7 @@ import PhoneAuth from './components/PhoneAuth';
 import ModerationDashboard from './pages/ModerationDashboard';
 import ArticleList from './pages/ArticleList';
 import ArticleEditor from './pages/ArticleEditor';
+import AlertSettings from './pages/AlertSettings';
 
 function MapConsole() {
   const { incidents, loading, error, freshIds, reportIncident } = useIncidents();
@@ -68,6 +69,7 @@ export default function App() {
           <Route path="/" element={<MapConsole />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/articles" element={<ArticleList />} />
+          <Route path="/alerts" element={<AlertSettings />} />
           <Route
             path="/moderation"
             element={

@@ -1,9 +1,15 @@
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
 interface HeaderProps {
   liveCount: number;
   onReportClick: () => void;
 }
 
 export default function Header({ liveCount, onReportClick }: HeaderProps) {
+  const auth = useAuth() as { session: unknown; signOut: () => Promise<void> } | null;
+  const isSignedIn = !!auth?.session;
+
   return (
     <header
       style={{
@@ -47,6 +53,26 @@ export default function Header({ liveCount, onReportClick }: HeaderProps) {
         <span className="mono" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
           {liveCount} active in view
         </span>
+        <Link to="/articles" style={{ fontSize: 13, color: 'var(--text-muted)', textDecoration: 'none' }}>
+          Articles
+        </Link>
+        {isSignedIn ? (
+          <>
+            <Link to="/alerts" style={{ fontSize: 13, color: 'var(--text-muted)', textDecoration: 'none' }}>
+              Alerts
+            </Link>
+            <button
+              onClick={() => auth?.signOut()}
+              style={{ background: 'transparent', border: '1px solid var(--line-600)', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)', padding: '6px 12px', fontSize: 13 }}
+            >
+              Sign out
+            </button>
+          </>
+        ) : (
+          <Link to="/signin" style={{ fontSize: 13, color: 'var(--text-muted)', textDecoration: 'none' }}>
+            Sign in
+          </Link>
+        )}
         <button
           onClick={onReportClick}
           style={{

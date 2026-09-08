@@ -178,3 +178,18 @@ drop trigger if exists articles_set_updated_at on articles;
 create trigger articles_set_updated_at
   before update on articles
   for each row execute procedure set_updated_at();
+
+-- ---------------------------------------------------------------------------
+-- Alerts (Phase 3) — decided: 2km radius, all severities, push + SMS,
+-- opt-in only. These are the profile columns the frontend (AlertSettings.tsx)
+-- reads/writes. Brooklyn: your Edge Function trigger, VAPID keys, and SMS
+-- provider wiring go below this, in their own section once built.
+-- ---------------------------------------------------------------------------
+alter table profiles add column if not exists watch_lat double precision;
+alter table profiles add column if not exists watch_lng double precision;
+alter table profiles add column if not exists alerts_enabled boolean not null default false;
+alter table profiles add column if not exists push_subscription jsonb;
+
+-- Users can only see/edit their own watch area, consent, and subscription —
+-- covered by the existing "Users can update their own profile" policy above,
+-- since it applies to all columns on the row. No new policy needed.
