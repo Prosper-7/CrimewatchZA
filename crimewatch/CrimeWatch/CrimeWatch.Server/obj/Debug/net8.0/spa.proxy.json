@@ -1,0 +1,10 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:65296",
+"RedirectUrl": "",
+"LaunchCommand": "npm run dev",
+"WorkingDirectory": "C:\\Users\\brook\\OneDrive\\Desktop\\OneDrive\\Documentos\\CrimewatchZA\\crimewatch\\CrimeWatch\\CrimeWatch.Server\\..\\crimewatch.client",
+"MaxTimeoutInSeconds": "120",
+"KeepRunning": "false"
+}
+}

@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37411.7 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "crimewatch.client", "crimewatch.client\crimewatch.client.esproj", "{2001E7E3-42F9-0CA8-9AA7-3CE3FF9D5591}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrimeWatch.Server", "CrimeWatch.Server\CrimeWatch.Server.csproj", "{C6C24EA4-5326-4675-9EA3-209831DBD2EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2001E7E3-42F9-0CA8-9AA7-3CE3FF9D5591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2001E7E3-42F9-0CA8-9AA7-3CE3FF9D5591}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2001E7E3-42F9-0CA8-9AA7-3CE3FF9D5591}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2001E7E3-42F9-0CA8-9AA7-3CE3FF9D5591}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2001E7E3-42F9-0CA8-9AA7-3CE3FF9D5591}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2001E7E3-42F9-0CA8-9AA7-3CE3FF9D5591}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C6C24EA4-5326-4675-9EA3-209831DBD2EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6C24EA4-5326-4675-9EA3-209831DBD2EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6C24EA4-5326-4675-9EA3-209831DBD2EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6C24EA4-5326-4675-9EA3-209831DBD2EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {13FEB59E-57E0-456F-8F72-E35A9A427D92}
+	EndGlobalSection
+EndGlobal
